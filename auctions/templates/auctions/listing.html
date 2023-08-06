@@ -1,0 +1,174 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{listing.title}} </h2>
+
+    {% if isAuthor %}
+
+    <form action="{% url 'declareWinner' list_id=listing.id %}" method="POST">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Close Auction</button>
+    </form>
+
+    {% endif %}
+
+    {% if not listing.activity %}
+      {% if winner %}
+    <div class="alert alert-success" role="alert">
+      "You just won a {{listing.title}}"
+    </div>
+    {% endif %}
+    {% endif %}
+
+
+    <div style="margin: 20px; padding: 20px; border: 1px solid grey;" class="packet">
+        <table>
+            <tr>
+                <th class="d1">Name : </th>
+                <th> {{listing.title}} </th>
+            </tr>
+            <tr>
+                <td class="d1">Description : </td>
+                <td>{{listing.description}}</td>
+            </tr>
+            <tr>
+                <td class="d1">Image : </td>
+                <td> <img src="{{ listing.imageUrl }}" alt="" width="500px" height="500px"></td>
+            </tr>
+            <tr>
+                <td class="d1">Initial Bid : </td>
+                <td>{{listing.initial_bid}}</td>
+            </tr>
+            <tr>
+                <td class="d1">Is Active : </td>
+                {% if listing.activity %}
+                <td>Active</td>
+                {% else %}
+                <td>Inactive</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td class="d1">Seller : </td>
+                <td>{{listing.seller}}</td>
+            </tr>
+            <tr>
+                <td class="d1">Category : </td>
+                <td>{{listing.category}}</td>
+            </tr>
+        </table>
+
+        <div class="row mx-3" style="margin: 30px;">
+            {% if user.is_authenticated %}
+            {% if isAdded %}
+            <form action="{% url 'removeFromWatchlist' list_id=listing.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Remove from Watchlist</button>
+            </form>
+            {% else %}
+            <form action="{% url 'addToWatchlist' list_id=listing.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Add to Watchlist</button>
+            </form>
+            {% endif %}
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <h6>Current Bid : {{listing.initial_bid.bid_price}}</h6>
+
+    <p>{{message}}</p>
+
+    {% if user.is_authenticated %}
+    <h3>Place your bid :</h3>
+    <section style="background-color: #eee;">
+      <div class="container my-5 py-5">
+        <div class="row d-flex justify-content-center">
+          <div class="col-md-12 col-lg-10 col-xl-8">
+            <div class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
+              <div class="d-flex flex-start w-100">
+                
+                <div class="form-outline w-100">
+                    <form action="{% url 'bidOnListing' list_id=listing.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="text" name="addedBid" placeholder="Add your bid">
+                        <button type="submit" class="btn btn-primary btn-sm">Place bid</button>
+                    </form>
+                  
+                </div>
+              </div>
+              <div class="float-end mt-2 pt-1">
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <section style="background-color: #eee;">
+        <div class="container my-5 py-5">
+          <div class="row d-flex justify-content-center">
+            <div class="col-md-12 col-lg-10 col-xl-8">
+                {% for comment in dedicatedComments %}
+              <div class="card">
+                <div class="card-body">
+                   
+                  <div class="d-flex flex-start align-items-center">
+                    <img class="rounded-circle shadow-1-strong me-3"
+                      src="https://tse4.mm.bing.net/th?id=OIP.eDfds46iXzl6qTA5yVkRJAHaHG&pid=Api&P=0&h=180" alt="avatar" width="60" style="margin: 10px;"
+                      height="60" />
+                    <div>
+                      <h6 class="fw-bold text-primary mb-1">{{comment.username}}</h6>
+                      <p class="text-muted small mb-0">
+                        Shared publicly
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <p class="mt-3 mb-4 pb-2">
+                   {{comment.text}}
+                  </p>
+                 
+                </div>
+                
+                
+              </div>
+              {% endfor %}
+              <div class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
+                <div class="d-flex flex-start w-100">
+                  
+                  <div class="form-outline w-100">
+                      <form action="{% url 'commentOnListing' list_id=listing.id %}" method="POST">
+                          {% csrf_token %}
+                          <input type="text" name="addedComment" placeholder="Add your comments">
+                          <button type="submit" class="btn btn-primary btn-sm">Post comment</button>
+                      </form>
+                    
+                  </div>
+                </div>
+                <div class="float-end mt-2 pt-1">
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {% endif %}
+    
+    <br>
+    <br>
+    <br>
+
+{% endblock %}

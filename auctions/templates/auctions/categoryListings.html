@@ -1,0 +1,19 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+   <div class="card-container">
+    {% for listing in categories %}
+
+    <div class="card">
+        <img src="{{ listing.imageUrl }}" alt="" width="250" height="250">
+        <h4>{{listing.title}}</h4>
+        <p>{{listing.description}}</p>
+        <button class="get-details"> <a href="{% url 'getDetails' listing_id=listing.id %}" style="color: black;"> Get details </a> </button>
+    </div>
+
+    {% endfor %}
+   
+   </div> 
+
+{% endblock %}

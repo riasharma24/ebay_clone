@@ -1,0 +1,43 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+
+<h2>Hello, {{username}}!</h2>
+<h3>Add your own listing : </h3>
+
+
+<form action="{% url 'addListing' %}" method="POST">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td><label for="name">Name : </label></td>
+            <td><input type="text" id="name" placeholder="Name of the listing" name="Listing_name"></td>
+        </tr>
+        <tr>
+            <td><label for="desc">Description : </label></td>
+            <td><input type="text" id="desc" placeholder="Description of the listing" name="Listing_desc"></td>
+        </tr>
+        <tr>
+            <td><label for="imgUrl">Image Url : </label></td>
+            <td><input type="text" id="imgUrl" placeholder="Url of the listing" name="Listing_url"></td>
+        </tr>
+        <tr>
+            <td><label for="initial_bid">Initial Bid : </label></td>
+            <td><input type="number" id="initial_bid" placeholder="Initial bid of the listing" name="Listing_ini_bid"></td>
+        </tr>
+        <tr>
+            <td><label for="categories">Categories : </label></td>
+            <td>
+                <select id="categories" name="Listing_category">
+                    {% for category in category_list %}
+                    <option value="{{ category }}">{{category}}</option>
+                    {% endfor %}
+               </select>
+            </td>
+        </tr>
+    </table>
+    <input type="submit">
+</form>
+
+
+{% endblock %}
